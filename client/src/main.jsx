@@ -6,7 +6,7 @@ import App from './App.jsx'
 
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri: 'https://giit-server1.onrender.com/api',
   cache: new InMemoryCache()
 });
 

@@ -1,5 +1,6 @@
 // schema/examTypeDefs.js
-import { gql } from 'apollo-server-express';
+import { gql } from 'graphql-tag';
+
 
 export const examTypeDefs = gql`
   # Question type (to be used in exam)

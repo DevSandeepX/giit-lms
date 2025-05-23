@@ -5,12 +5,10 @@ import express from 'express';
 import connectDB from './config/connectDB.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-// Import typeDefs
 import { courseTypeDefs } from './schemas/courseSchema.js';
 import { chapterTypeDefs } from './schemas/chapterSchema.js';
 import { questionTypeDefs } from './schemas/questionSchema.js';
@@ -19,7 +17,6 @@ import { examTypeDefs } from './schemas/examSchema.js';
 import { certificateTypeDefs } from './schemas/certificateSchema.js';
 import userTypeDefs from './schemas/userSchema.js';
 
-// Import resolvers
 import { courseResolvers } from './resolvers/courseResolver.js';
 import { chapterResolver } from './resolvers/chapterResolver.js';
 import { questionResolver } from './resolvers/questionResolver.js';
@@ -31,7 +28,7 @@ async function startServer() {
   const app = express();
 
   app.use(cors());
-  app.use(bodyParser.json());
+  app.use(express.json());  // Built-in JSON parser middleware
 
   const server = new ApolloServer({
     typeDefs: [
@@ -41,20 +38,20 @@ async function startServer() {
       studentTypeDefs,
       examTypeDefs,
       certificateTypeDefs,
-      userTypeDefs
+      userTypeDefs,
     ],
     resolvers: [
       courseResolvers,
       chapterResolver,
       questionResolver,
-      userResolvers
+      userResolvers,
     ],
   });
 
   await server.start();
 
   app.use(
-    '/graphql',
+    '/api',
     expressMiddleware(server, {
       context: async ({ req }) => {
         const token = req.headers.authorization?.split(' ')[1];
@@ -67,13 +64,13 @@ async function startServer() {
           }
         }
         return {};
-      }
+      },
     })
   );
 
   const PORT = process.env.PORT || 3500;
   app.listen(PORT, () => {
-    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+    console.log(`🚀 Server ready at http://localhost:${PORT}/api`);
   });
 }
 
